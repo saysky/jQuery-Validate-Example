@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>SpringBlog-注册示例</title>
+    <meta name='robots' content='noindex,follow'/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" href="css/register.min.css" th:href="@{/css/register.min.css}">
+    <style>
+        input.error {
+            border: 1px solid #CE5542;
+        }
+
+        label.error {
+            color: #CE5542;
+        }
+
+        input.valid {
+            border: 1px solid #00a65a;
+        }
+
+        label.valid {
+            color: #00a65a;
+        }
+    </style>
+</head>
+<body class="login login-action-register wp-core-ui  locale-zh-cn">
+<div id="login">
+    <h1><a href="http://wp.liuyanzhao.com" title="欢迎您光临本站！" tabindex="-1">欢迎您光临本站！</a></h1>
+    <p class="message register">在这个站点注册</p>
+    <form name="registerForm" id="registerForm" action="http://wp.liuyanzhao.com/wp-login.php?action=register"
+          method="post" class="form-horizontal">
+        <p>
+            <label for="username"><strong>用户名</strong><br/>
+                <input type="text" name="username" id="username" class="input" value="" size="20"/>
+            </label>
+        </p>
+        <br>
+        <p>
+            <label for="password"><strong>密码</strong><br/>
+                <input type="password" name="password" id="password" class="input" value="" size="25"/>
+            </label>
+        </p>
+        <br>
+        <p>
+            <label for="password"><strong>确认密码</strong><br/>
+                <input type="password" name="confirm_password" id="confirm_password" class="input" value="" size="25"/>
+            </label>
+        </p>
+        <br>
+        <p>
+            <label for="qq"><strong>QQ号码</strong><br/>
+                <input type="text" name="qq" id="qq" class="input" value="" size="25"/>
+            </label>
+        </p>
+        <br/>
+        <p class="submit">
+            <input type="submit" name="submit" class="button button-primary button-large" value="注册"/>
+        </p>
+    </form>
+
+
+    <p id="nav">
+        <a href="#">登录</a>
+        | <a href="#">忘记密码？</a>
+    </p>
+
+    <p id="backtoblog"><a href="http://liuyanzhao.com/">&larr; 返回到言曌博客</a></p>
+
+</div>
+
+
+<script src="js/jquery.min.js" th:src="@{/common/jquery/jquery.min.js}"></script>
+<script src="js/jquery.validate.js" type="text/javascript" th:src="@{/common/jquery-validate/jquery.validate.js}"></script>
+
+<script type="text/javascript">
+    $(function () {
+        //让当前表单调用validate方法，实现表单验证功能
+        $("#registerForm").validate({
+            success:"valid",
+            submitHandler:function() {
+                alert("欢迎加入我们!")
+            },
+//            debug: true, //调试模式，即使验证成功也不会跳转到目标页面
+            rules: {     //配置验证规则，key就是被验证的dom对象，value就是调用验证的方法(也是json格式)
+                username: {
+                    required: true,  //必填。如果验证方法不需要参数，则配置为true
+                    rangelength: [6, 12],
+                    remote: {
+                        url: "/ajax_check_username",     //后台处理程序
+                        type: "get",               //数据发送方式
+                        dataType: "json",           //接受数据格式
+                        data: {                     //要传递的数据
+                            username: function () {
+                                return $("#username").val();
+                            }
+                        }
+                    },
+
+                },
+                password: {
+                    required: true,
+                    rangelength: [6, 20]
+                },
+                confirm_password: {
+                    required: true,
+                    equalTo: '#password'
+                },
+                qq: {
+                    required: true,
+                    number: true,
+                    rangelength: [5, 10]
+                }
+            },
+            messages: {
+                username: {
+                    required: "请输入用户名,用于登录",
+                    rangelength: $.validator.format("用户名长度在必须为：{0}-{1}之间"),
+                    remote: "该用户名已存在！"
+                },
+                password: {
+                    required: "请输入密码",
+                    rangelength: $.validator.format("密码长度必须为：{0}-{1}之间")
+                },
+                confirm_password: {
+                    required: "请再次输入密码",
+                    equalTo: "两次密码必须一致"
+                },
+                qq: {
+                    required: "请输入qq号，用于获取昵称和头像",
+                    number: "只允许输入数字",
+                    rangelength: "请检查qq号输入是否正确"
+                }
+
+            }
+        });
+    });
+
+
+</script>
+</body>
+</html>
+	
